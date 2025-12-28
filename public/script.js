@@ -9,6 +9,23 @@ function addExpense() {
         alert("Please select category and enter amount");
         return;
     }
+function renderExpense(expense) {
+   const li = document.createElement("li");
+   li.innerHTML = `
+   ${expense.title} - ₹${expense.amount}
+   <button onclick="deleteExpense('${expense._id}')">❌</button>
+  `;
+  expenseList.appendChild(li);
+}
+function deleteExpense(id) {
+  fetch(`/expenses/${id}`, {
+    method: "DELETE"
+  })
+  .then(() => {
+    fetchExpenses(); // reload list
+  });
+}
+
 
     const title = titleInput ? titleInput : category;
 

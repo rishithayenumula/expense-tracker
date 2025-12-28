@@ -32,11 +32,17 @@ app.post("/expenses", async (req, res) => {
 
 // Delete expense
 app.delete("/expenses/:id", async (req, res) => {
-  await Expense.findByIdAndDelete(req.params.id);
-  res.json({ message: "Expense deleted" });
+  try {
+    await Expense.findByIdAndDelete(req.params.id);
+    res.json({ message: "Expense deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
