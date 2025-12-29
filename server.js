@@ -1,21 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Expense = require("./models/Expense");
+const path = require("path");
 
 const app = express();
-const PORT = 3000;
-
-// Middleware
 app.use(express.json());
 app.use(express.static("public"));
 
-// MongoDB connection
-mongoose
-  .connect("mongodb://127.0.0.1:27017/expenseTracker")
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.error(err));
+mongoose.connect("mongodb://127.0.0.1:27017/expenseTracker");
 
-// Routes
+const Expense = mongoose.model("Expense", {
+  category: String,
+  title: String,
+  amount: Number,
+});
 
 // Get all expenses
 app.get("/expenses", async (req, res) => {
@@ -32,17 +29,10 @@ app.post("/expenses", async (req, res) => {
 
 // Delete expense
 app.delete("/expenses/:id", async (req, res) => {
-  try {
-    await Expense.findByIdAndDelete(req.params.id);
-    res.json({ message: "Expense deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  await Expense.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted" });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
 });
-
-
